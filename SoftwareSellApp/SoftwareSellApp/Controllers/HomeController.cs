@@ -15,24 +15,47 @@ public class HomeController : Controller
         _logger = logger;
         this.db = db;
     }
-    public IActionResult Index()
-    {
-        return View(db.products);
-    }
 
+    [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> Index(string Name)
     {
+        if (string.IsNullOrEmpty(Name))
+        {
+            return View(await db.products.ToListAsync());
+        }
+
         return View(await db.products.Where(p => p.productName.Contains(Name)).ToListAsync());
     }
 
-    public async Task<IActionResult> ProductView(int id)
+    public async Task<IActionResult> ProductView(string id)
     {
-        Product product = await db.products.FindAsync(id);
+        Product product = await db.products.FirstOrDefaultAsync(p => p.productId == id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
         return View(product);
     }
-    public async Task<IActionResult> AddProduct()
+
+    public IActionResult AddProduct()
     {
-        return null;
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddProduct(Product product)
+    {
+        if (ModelState.IsValid)
+        {
+            db.products.Add(product);
+            await db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(product);
     }
 
     public IActionResult Privacy()
