@@ -1,8 +1,93 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<SoftwareSellApp.Models.Product>
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-4">Cửa hàng phần mềm</h1>
+            <p class="lead">Khám phá các sản phẩm phần mềm chất lượng cao</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="AddProduct" asp-controller="Home" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus"></i> Thêm sản phẩm
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form asp-action="Index" method="get" class="d-flex">
+                <input type="text" name="Name" class="form-control me-2" placeholder="Tìm kiếm sản phẩm..." value="@ViewBag.SearchTerm" />
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary ms-2">
+                    <i class="fas fa-times"></i> Xóa
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.productName</h5>
+                            <p class="card-text">
+                                <small class="text-muted">Mã sản phẩm: @product.productId</small>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a asp-action="ProductView" asp-route-id="@product.productId" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye"></i> Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center" role="alert">
+                    <h4 class="alert-heading">Không có sản phẩm</h4>
+                    <p>Hiện tại chưa có sản phẩm nào trong cửa hàng.</p>
+                    <hr>
+                    <p class="mb-0">
+                        <a asp-action="AddProduct" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Thêm sản phẩm đầu tiên
+                        </a>
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
 </div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+</style>

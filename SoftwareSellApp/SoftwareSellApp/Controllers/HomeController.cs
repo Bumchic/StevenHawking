@@ -24,19 +24,32 @@ public class HomeController : Controller
     }
     public async Task<IActionResult> ProductView(int id)
     {
-        Product product = await db.products.FindAsync(id);
+        Product product = await db.products.FirstOrDefaultAsync(p => p.productId == id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
         return View(product);
     }
-    public async Task<IActionResult> AddProduct()
+
+    public IActionResult AddProduct()
     {
         return View();
     }
+
     [HttpPost]
     public async Task<IActionResult> AddProduct(Product product)
     {
-        await db.products.AddAsync(product);
-        await db.SaveChangesAsync();
-        return RedirectToAction("AddProduct");
+        if (ModelState.IsValid)
+        {
+            db.products.Add(product);
+            await db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(product);
     }
     public IActionResult Privacy()
     {
