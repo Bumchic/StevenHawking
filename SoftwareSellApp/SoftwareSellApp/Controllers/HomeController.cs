@@ -24,7 +24,7 @@ public class HomeController : Controller
     }
     public async Task<IActionResult> ProductView(int id)
     {
-        Product product = await db.products.FirstOrDefaultAsync(p => p.productId == id);
+        Product product = await db.products.FindAsync(id);
 
         if (product == null)
         {
