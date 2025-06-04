@@ -18,8 +18,9 @@ public class HomeController : Controller
     }
     public async Task<IActionResult> Index(string search = "")
     {
+        search = search.ToLower();
         List<Product> products = await db.products.ToListAsync();
-        List<Product> filter = products.Where(p => p.productName.Contains(search)).ToList();
+        List<Product> filter = products.Where(p => p.productName.ToLower().Contains(search)).ToList();
         return View(filter);
     }
     public async Task<IActionResult> ProductView(int id)
