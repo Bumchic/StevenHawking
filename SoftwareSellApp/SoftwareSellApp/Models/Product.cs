@@ -1,8 +1,24 @@
-﻿namespace SoftwareSellApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SoftwareSellApp.Models
 {
     public class Product
     {
-        public string productName { get; set; }
+        [Key]
         public string productId { get; set; }
+        [Required]
+        [StringLength(200)]
+        public string productName { get; set; }
+        public string? images { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        [Required]
+        public decimal price { get; set; }
+        [StringLength(1000)]
+        public string? introduce { get; set; }
+        [Required]
+        public int CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        public virtual Category? Category { get; set; }
     }
 }
