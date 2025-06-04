@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SoftwareSellApp.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace SoftwareSellApp.Controllers;
 
@@ -15,16 +16,12 @@ public class HomeController : Controller
         _logger = logger;
         this.db = db;
     }
-    public IActionResult Index()
+    public async Task<IActionResult> Index(string search = "")
     {
-        return View(db.products);
+        List<Product> products = await db.products.ToListAsync();
+        List<Product> filter = products.Where(p => p.productName.Contains(search)).ToList();
+        return View(filter);
     }
-
-    public async Task<IActionResult> Index(string Name)
-    {
-        return View(await db.products.Where(p => p.productName.Contains(Name)).ToListAsync());
-    }
-
     public async Task<IActionResult> ProductView(int id)
     {
         Product product = await db.products.FindAsync(id);
@@ -32,9 +29,15 @@ public class HomeController : Controller
     }
     public async Task<IActionResult> AddProduct()
     {
-        return null;
+        return View();
     }
-
+    [HttpPost]
+    public async Task<IActionResult> AddProduct(Product product)
+    {
+        await db.products.AddAsync(product);
+        await db.SaveChangesAsync();
+        return RedirectToAction("AddProduct");
+    }
     public IActionResult Privacy()
     {
         return View();
