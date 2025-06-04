@@ -12,8 +12,8 @@ using SoftwareSellApp.Models;
 namespace SoftwareSellApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250528060847_AddUserOrderProduct")]
-    partial class AddUserOrderProduct
+    [Migration("20250604014427_ReAddDataBase")]
+    partial class ReAddDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -236,34 +236,76 @@ namespace SoftwareSellApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SoftwareSellApp.Models.Category", b =>
+                {
+                    b.Property<int>("categoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("categoryId"));
+
+                    b.Property<string>("categoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("categoryId");
+
+                    b.ToTable("categories");
+                });
+
             modelBuilder.Entity("SoftwareSellApp.Models.Order", b =>
                 {
-                    b.Property<string>("OrderId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Order_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Order_Id"));
 
                     b.Property<DateTime>("DayBought")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("fromId")
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("User_Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("OrderId");
+                    b.HasKey("Order_Id");
 
-                    b.HasIndex("fromId");
+                    b.HasIndex("User_Id");
 
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("SoftwareSellApp.Models.Product", b =>
                 {
-                    b.Property<string>("productId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("productId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("productId"));
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("images")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("introduce")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<decimal>("price")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("productName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("productId");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("products");
                 });
@@ -335,11 +377,20 @@ namespace SoftwareSellApp.Migrations
 
             modelBuilder.Entity("SoftwareSellApp.Models.Order", b =>
                 {
-                    b.HasOne("SoftwareSellApp.Models.User", "from")
+                    b.HasOne("SoftwareSellApp.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("fromId");
+                        .HasForeignKey("User_Id");
 
-                    b.Navigation("from");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SoftwareSellApp.Models.Product", b =>
+                {
+                    b.HasOne("SoftwareSellApp.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

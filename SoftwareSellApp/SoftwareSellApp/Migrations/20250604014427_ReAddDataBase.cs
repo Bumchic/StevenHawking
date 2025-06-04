@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SoftwareSellApp.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUserOrderProduct : Migration
+    public partial class ReAddDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -54,15 +54,16 @@ namespace SoftwareSellApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "products",
+                name: "categories",
                 columns: table => new
                 {
-                    productId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    productName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    categoryId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    categoryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_products", x => x.productId);
+                    table.PrimaryKey("PK_categories", x => x.categoryId);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,18 +176,42 @@ namespace SoftwareSellApp.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Order_Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     DayBought = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    fromId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    User_Id = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.PrimaryKey("PK_Orders", x => x.Order_Id);
                     table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_fromId",
-                        column: x => x.fromId,
+                        name: "FK_Orders_AspNetUsers_User_Id",
+                        column: x => x.User_Id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "products",
+                columns: table => new
+                {
+                    productId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    productName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    images = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    introduce = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_products", x => x.productId);
+                    table.ForeignKey(
+                        name: "FK_products_categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "categories",
+                        principalColumn: "categoryId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -229,9 +254,14 @@ namespace SoftwareSellApp.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_fromId",
+                name: "IX_Orders_User_Id",
                 table: "Orders",
-                column: "fromId");
+                column: "User_Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_products_CategoryId",
+                table: "products",
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
@@ -263,6 +293,9 @@ namespace SoftwareSellApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "categories");
         }
     }
 }
