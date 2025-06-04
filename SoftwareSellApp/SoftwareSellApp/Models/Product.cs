@@ -17,6 +17,6 @@ namespace SoftwareSellApp.Models
         [StringLength(1000)]
         public string? introduce { get; set; }
         [ForeignKey("CategoryId")]
-        public virtual Category? Category { get; set; }
+        public Category? Category { get; set; }
     }
 }
