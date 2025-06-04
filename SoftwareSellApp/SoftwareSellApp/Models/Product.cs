@@ -6,7 +6,7 @@ namespace SoftwareSellApp.Models
     public class Product
     {
         [Key]
-        public string productId { get; set; }
+        public int productId { get; set; }
         [Required]
         [StringLength(200)]
         public string productName { get; set; }

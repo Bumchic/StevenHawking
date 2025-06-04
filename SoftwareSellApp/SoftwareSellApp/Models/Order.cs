@@ -6,7 +6,7 @@ namespace SoftwareSellApp.Models
     public class Order
     {
         [Key]
-        public string Order_Id { get; set; }
+        public int Order_Id { get; set; }
         public DateTime DayBought { get; set; }
 
         [ForeignKey("User_Id")]
