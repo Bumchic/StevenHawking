@@ -1,9 +1,18 @@
-﻿namespace SoftwareSellApp.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace SoftwareSellApp.Models
 {
     public class Order
     {
-        public string OrderId { get; set; }
+        [Key]
+        public string Order_Id { get; set; }
         public DateTime DayBought { get; set; }
-        public User? from { get; set; }
+
+        [ForeignKey("User_Id")]
+        public User? User { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal TotalAmount { get; set; }
     }
 }
