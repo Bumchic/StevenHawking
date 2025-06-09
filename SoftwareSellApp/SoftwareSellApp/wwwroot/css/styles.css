@@ -1,0 +1,80 @@
+﻿body {
+    background: linear-gradient(120deg, #f9f9f9 0%, #e6e9f0 100%);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #333;
+}
+
+a, .btn, .card {
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.container {
+    flex-grow: 1;
+}
+
+main.pb-3 {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 12px; 
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px); 
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+    }
+
+.product-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .product-card .card-img-top {
+        width: 100%;
+        height: 200px;
+        object-fit: cover; 
+    }
+
+    .product-card .card-body {
+        padding: 1.25rem;
+    }
+
+    .product-card .card-title {
+        font-weight: 700;
+    }
+
+    .product-card .card-text {
+        color: #007bff;
+        font-weight: 500;
+        font-size: 1.2rem;
+    }
+
+
+.footer {
+    background-color: transparent;
+    border-top: 1px solid #dee2e6 !important;
+    color: #6c757d;
+    padding: 1.5rem 0;
+}
