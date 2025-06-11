@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SoftwareSellApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SoftwareSellApp.Controllers;
 
@@ -35,8 +36,10 @@ public class HomeController : Controller
         return View(product);
     }
 
-    public IActionResult AddProduct()
+    public async Task<IActionResult> AddProductAsync()
     {
+        List<Category> categories = await db.categories.ToListAsync();
+        ViewBag.Categories = new SelectList(categories);
         return View();
     }
 
