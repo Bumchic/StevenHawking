@@ -247,7 +247,7 @@ namespace SoftwareSellApp.Migrations
 
                     b.HasKey("categoryId");
 
-                    b.ToTable("categories", (string)null);
+                    b.ToTable("categories");
                 });
 
             modelBuilder.Entity("SoftwareSellApp.Models.Order", b =>
@@ -271,7 +271,7 @@ namespace SoftwareSellApp.Migrations
 
                     b.HasIndex("User_Id");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("SoftwareSellApp.Models.Product", b =>
@@ -304,7 +304,7 @@ namespace SoftwareSellApp.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("products", (string)null);
+                    b.ToTable("products");
                 });
 
             modelBuilder.Entity("SoftwareSellApp.Models.User", b =>
