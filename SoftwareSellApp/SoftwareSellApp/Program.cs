@@ -35,7 +35,6 @@ namespace SoftwareSellApp
             app.UseAuthorization();
             app.UseAuthentication();
             app.MapRazorPages();
-
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
