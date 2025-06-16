@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace SoftwareSellApp.Models
 {
@@ -10,6 +12,5 @@ namespace SoftwareSellApp.Models
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<Category> categories { get; set; }
-
     }
 }
