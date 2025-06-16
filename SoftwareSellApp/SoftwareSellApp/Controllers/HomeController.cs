@@ -65,4 +65,19 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+    public ActionResult Categories()
+    {
+        var categories = db.categories.ToList();
+        return View(categories);
+    }
+
+    public IActionResult Category(int id, string categoryName)
+    {
+        var products = db.products
+                               .Include(p => p.Category)
+                               .Where(p => p.Category.categoryId == id)
+                               .ToList();
+        ViewBag.CategoryName = categoryName;
+        return View(products);
+    }
 }
