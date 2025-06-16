@@ -16,6 +16,7 @@ namespace SoftwareSellApp.Models
         public decimal price { get; set; }
         [StringLength(1000)]
         public string? introduce { get; set; }
+        public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         public Category? Category { get; set; }
     }

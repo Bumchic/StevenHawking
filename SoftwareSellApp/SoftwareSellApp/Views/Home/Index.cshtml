@@ -23,13 +23,20 @@
             {
                 <div class="col-md-4 col-sm-6 mb-4">
                     <div class="card h-100 shadow-sm">
+
+                        <img class="card-img-top" src="~/images/@product.images" alt="Hình ảnh sản phẩm">                       
                         <div class="card-body">
                             <h5 class="card-title">@product.productName</h5>
+
+                            <p class="card-text text-danger font-weight-bold">
+                                @product.price.ToString("N0") VNĐ
+                            </p>
+
                             <p class="card-text">
                                 <small class="text-muted">Mã sản phẩm: @product.productId</small>
                             </p>
                         </div>
-                        <div class="card-footer bg-transparent">
+                        <div class="card-footer bg-transparent border-top-0">
                             <a asp-action="ProductView" asp-route-id="@product.productId" class="btn btn-primary btn-sm">
                                 <i class="fas fa-eye"></i> Xem chi tiết
                             </a>
@@ -45,11 +52,6 @@
                     <h4 class="alert-heading">Không có sản phẩm</h4>
                     <p>Hiện tại chưa có sản phẩm nào trong cửa hàng.</p>
                     <hr>
-                    <p class="mb-0">
-                        <a asp-action="AddProduct" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Thêm sản phẩm đầu tiên
-                        </a>
-                    </p>
                 </div>
             </div>
         }
@@ -76,4 +78,8 @@
             background-color: #0b5ed7;
             border-color: #0a58ca;
         }
+
+    .card-img-top {
+        object-fit: contain;
+    }
 </style>

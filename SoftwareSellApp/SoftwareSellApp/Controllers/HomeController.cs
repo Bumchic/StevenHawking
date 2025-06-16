@@ -55,6 +55,22 @@ public class HomeController : Controller
 
         return View(product);
     }
+    public ActionResult Categories()
+    {
+        var categories = db.categories.ToList();
+        return View(categories);
+    }
+
+    public IActionResult Category(int id, string categoryName)
+    {
+        var products = db.products                 
+                               .Include(p => p.Category)
+                               .Where(p => p.CategoryId == id)
+                               .ToList();
+
+        ViewBag.CategoryName = categoryName;
+        return View(products);
+    }
     public IActionResult Privacy()
     {
         return View();
