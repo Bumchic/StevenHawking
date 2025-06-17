@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SoftwareSellApp.Models;
 using Microsoft.EntityFrameworkCore;
@@ -74,6 +74,29 @@ public class HomeController : Controller
 
         return View(product);
     }
+
+    //[HttpGet]
+    //public IActionResult AddProduct()
+    //{
+    //    ViewBag.Categories = new SelectList(db.categories, "categoryId", "categoryName");
+    //    return View();
+    //}
+
+    //[HttpPost]
+    //public async Task<IActionResult> AddProduct(Product product)
+    //{
+    //    if (ModelState.IsValid)
+    //    {
+    //        db.products.Add(product);
+    //        await db.SaveChangesAsync();
+    //        return RedirectToAction(nameof(Index));
+    //    }
+
+    //    ViewBag.Categories = new SelectList(db.categories, "categoryId", "categoryName");
+    //    return View(product);
+    //}
+
+
     public IActionResult Privacy()
     {
         return View();
