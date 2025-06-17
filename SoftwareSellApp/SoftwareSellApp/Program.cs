@@ -15,10 +15,8 @@ namespace SoftwareSellApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).
+            builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().
                 AddEntityFrameworkStores<ApplicationDbContext>();
-
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -32,10 +30,10 @@ namespace SoftwareSellApp
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            app.UseAuthorization();
-            app.UseAuthentication();
-            app.MapRazorPages();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.MapRazorPages();
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
