@@ -17,13 +17,32 @@ public class HomeController : Controller
         _logger = logger;
         this.db = db;
     }
+
+    //public async Task<IActionResult> Index(string search = "")
+    //{
+    //    search = search.ToLower();
+    //    List<Product> products = await db.products.ToListAsync();
+    //    List<Product> filter = products.Where(p => p.productName.ToLower().Contains(search)).ToList();
+    //    return View(filter);
+    //}
+
     public async Task<IActionResult> Index(string search = "")
     {
-        search = search.ToLower();
-        List<Product> products = await db.products.ToListAsync();
-        List<Product> filter = products.Where(p => p.productName.ToLower().Contains(search)).ToList();
-        return View(filter);
+        ViewBag.SearchTerm = search;
+        IQueryable<Product> productsQuery = db.products.Include(p => p.Category);
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            string lowerSearch = search.ToLower();
+
+            productsQuery = productsQuery.Where(p => p.productName != null && p.productName.ToLower().Contains(lowerSearch));
+        }
+
+        var filteredProducts = await productsQuery.ToListAsync();
+
+        return View(filteredProducts);
     }
+
     public async Task<IActionResult> ProductView(int id)
     {
         Product product = await db.products.FindAsync(id);
