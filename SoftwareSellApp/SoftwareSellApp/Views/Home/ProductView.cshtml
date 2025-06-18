@@ -31,9 +31,24 @@
                         </h2>
 
                         <div class="d-grid gap-2 d-md-flex">
-                            <a asp-action="Edit" asp-route-id="@Model.productId" class="btn btn-primary btn-lg">
-                                <i class="fas fa-edit"></i> Chỉnh sửa
-                            </a>
+                            @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+                            {
+                                <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@Model.productId" class="btn btn-success btn-lg">
+                                    <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+                                </a>
+                            }
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@Model.productId" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-edit"></i> Chỉnh sửa
+                                </a>
+
+                                <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                    <i class="fas fa-trash"></i> Xóa sản phẩm
+                                </button>
+                            }
+
                             <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
                                 <i class="fas fa-arrow-left"></i> Quay lại danh sách
                             </a>
@@ -44,5 +59,37 @@
         </div>
     </div>
 </div>
+
+@if (User.IsInRole("Admin"))
+{
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa sản phẩm "<strong>@Model.productName</strong>" không?
+                    </div>
+                    <p class="text-muted">Hành động này không thể hoàn tác!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                    <form asp-action="Delete" asp-route-id="@Model.productId" method="post" style="display: inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Xóa sản phẩm
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

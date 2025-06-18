@@ -229,4 +229,36 @@ public class HomeController : Controller
 
         return View(product);
     }
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            var product = await db.products.FindAsync(id);
+            if (product == null)
+            {
+                TempData["ErrorMessage"] = "Sản phẩm không tồn tại.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            string productName = product.productName;
+
+            db.products.Remove(product);
+            await db.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Đã xóa thành công sản phẩm '{productName}'.";
+
+            _logger.LogInformation($"Admin user deleted product: ID={id}, Name={productName}, Time={DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error deleting product with ID {id}");
+            TempData["ErrorMessage"] = "Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại.";
+            return RedirectToAction(nameof(Index));
+        }
+    }
 }
