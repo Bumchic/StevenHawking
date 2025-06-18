@@ -1,49 +1,48 @@
 ﻿@model SoftwareSellApp.Models.Product
 
 @{
-    ViewData["Title"] = "ProductView";
+    ViewData["Title"] = Model.productName;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>ProductView</h1>
+<div class="container my-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-5">
+            <div class="row">
+                <div class="col-md-6 text-center mb-4 mb-md-0">
+                    <img src="~/images/@Model.images" class="img-fluid rounded shadow" alt="Hình ảnh của @Model.productName" style="max-height: 400px; object-fit: cover;" />
+                </div>
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.productName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.productName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.images)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.images)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.price)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.introduce)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.introduce)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category.categoryName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.categoryName)
-        </dd>
-    </dl>
+                <div class="col-md-6 d-flex flex-column">
+                    <h1 class="display-4">@Model.productName</h1>
+
+                    @if (Model.Category != null)
+                    {
+                        <h5 class="text-muted mb-3">
+                            <span class="badge bg-info text-dark">@Model.Category.categoryName</span>
+                        </h5>
+                    }
+
+                    <p class="lead">@Model.introduce</p>
+
+                    <div class="mt-auto">
+                        <h2 class="text-danger fw-bold my-3">
+                            Giá: @Model.price.ToString("N0") VNĐ
+                        </h2>
+
+                        <div class="d-grid gap-2 d-md-flex">
+                            <a asp-action="Edit" asp-route-id="@Model.productId" class="btn btn-primary btn-lg">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </a>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.productId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SoftwareSellApp.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace SoftwareSellApp.Controllers;
 
@@ -25,17 +26,43 @@ public class HomeController : Controller
         this.userManager = userManager;
         this.roleManager = roleManager;
     }
+
+    //public async Task<IActionResult> Index(string search = "")
+    //{
+    //    search = search.ToLower();
+    //    List<Product> products = await db.products.ToListAsync();
+    //    List<Product> filter = products.Where(p => p.productName.ToLower().Contains(search)).ToList();
+    //    return View(filter);
+    //}
+
     public async Task<IActionResult> Index(string search = "")
     {
+        Debug.WriteLine(User.IsInRole("Admin"));
+        ViewBag.SearchTerm = search;
+        IQueryable<Product> productsQuery = db.products.Include(p => p.Category);
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            string lowerSearch = search.ToLower();
+
+            productsQuery = productsQuery.Where(p => p.productName != null && p.productName.ToLower().Contains(lowerSearch));
+        }
+
+        var filteredProducts = await productsQuery.ToListAsync();
+
+        return View(filteredProducts);
         Debug.WriteLine(User.IsInRole("Admin"));
         search = search.ToLower();
         List<Product> products = await db.products.ToListAsync();
         List<Product> filter = products.Where(p => p.productName.ToLower().Contains(search)).ToList();
         return View(filter);
     }
+
     public async Task<IActionResult> ProductView(int id)
     {
-        Product product = await db.products.FindAsync(id);
+        var product = await db.products
+                                    .Include(p => p.Category) 
+                                    .FirstOrDefaultAsync(p => p.productId == id);
 
         if (product == null)
         {
@@ -44,26 +71,55 @@ public class HomeController : Controller
 
         return View(product);
     }
+
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> AddProductAsync()
+    public async Task<IActionResult> AddProduct()
     {
-        List<Category> categories = await db.categories.ToListAsync();
-        ViewBag.Categories = new SelectList(categories);
+        var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
+        ViewBag.CategoriesJson = JsonConvert.SerializeObject(categories);
+        ViewBag.categories = categories;
         return View();
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddProduct(Product product)
     {
         if (ModelState.IsValid)
         {
-            db.products.Add(product);
+            db.Add(product);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
+        ViewBag.CategoriesJson = JsonConvert.SerializeObject(categories);
+        ViewBag.categories = categories;
         return View(product);
     }
+
+    //[HttpGet]
+    //public IActionResult AddProduct()
+    //{
+    //    ViewBag.Categories = new SelectList(db.categories, "categoryId", "categoryName");
+    //    return View();
+    //}
+
+    //[HttpPost]
+    //public async Task<IActionResult> AddProduct(Product product)
+    //{
+    //    if (ModelState.IsValid)
+    //    {
+    //        db.products.Add(product);
+    //        await db.SaveChangesAsync();
+    //        return RedirectToAction(nameof(Index));
+    //    }
+
+    //    ViewBag.Categories = new SelectList(db.categories, "categoryId", "categoryName");
+    //    return View(product);
+    //}
+
+
     public IActionResult Privacy()
     {
         return View();
@@ -119,5 +175,57 @@ public class HomeController : Controller
             await userManager.AddToRoleAsync(user, "Admin");
         }
         return RedirectToAction("Index");
+    }
+
+
+    public async Task<IActionResult> Edit(int id)
+    {
+        var product = await db.products.FindAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
+        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName", product.Category.categoryId);
+
+        return View(product);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, [Bind("productId,productName,images,price,introduce,CategoryId")] Product product)
+    {
+        if (id != product.productId)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+
+                db.Update(product);
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!db.products.Any(e => e.productId == product.productId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(ProductView), new { id = product.productId });
+        }
+
+        var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
+        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName", product.Category.categoryId);
+
+        return View(product);
     }
 }
