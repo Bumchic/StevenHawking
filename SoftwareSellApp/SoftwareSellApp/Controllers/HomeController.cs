@@ -83,8 +83,9 @@ public class HomeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddProduct(Product product)
+    public async Task<IActionResult> AddProduct(Product product, int categoryId)
     {
+        product.Category = db.categories.First(c => c.categoryId == categoryId);
         if (ModelState.IsValid)
         {
             db.Add(product);
