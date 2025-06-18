@@ -188,21 +188,20 @@ public class HomeController : Controller
         }
 
         var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
-        ViewBag.CategoriesJson = JsonConvert.SerializeObject(categories);
-        ViewBag.categories = categories;
+        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName", product.Category.categoryId);
 
         return View(product);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("productId,productName,images,price,introduce,CategoryId")] Product product)
+    public async Task<IActionResult> Edit(int id, Product product, int categoryId)
     {
         if (id != product.productId)
         {
             return NotFound();
         }
-
+        product.Category = db.categories.First(c => c.categoryId == categoryId);
         if (ModelState.IsValid)
         {
             try
