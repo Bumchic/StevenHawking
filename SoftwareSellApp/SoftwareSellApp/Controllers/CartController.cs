@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SoftwareSellApp.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,13 @@ namespace SoftwareSellApp.Controllers
         }
 
         public const string CARTKEY = "cart";
-
+        [Authorize]
         public IActionResult Index()
         {
             var cart = HttpContext.Session.GetObjectFromJson<Cart>(CARTKEY) ?? new Cart();
             return View(cart);
         }
-
+        [Authorize]
         public IActionResult AddToCart(int id)
         {
             var product = _context.products.FirstOrDefault(p => p.productId == id);
@@ -53,7 +54,7 @@ namespace SoftwareSellApp.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-
+        [Authorize]
         public IActionResult RemoveFromCart(int id)
         {
             var cart = HttpContext.Session.GetObjectFromJson<Cart>(CARTKEY) ?? new Cart();
