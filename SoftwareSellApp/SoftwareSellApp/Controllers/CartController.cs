@@ -92,7 +92,12 @@ namespace SoftwareSellApp.Controllers
                 await db.Orders.AddAsync(order);
                 db.SaveChanges();
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("paymentSuccess");
+        }
+        public async Task<IActionResult> paymentSuccess()
+        {
+            return View();
         }
     }
+
 }
