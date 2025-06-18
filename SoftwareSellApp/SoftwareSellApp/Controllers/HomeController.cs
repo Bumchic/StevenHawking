@@ -59,7 +59,9 @@ public class HomeController : Controller
 
     public async Task<IActionResult> ProductView(int id)
     {
-        Product product = await db.products.FindAsync(id);
+        var product = await db.products
+                                    .Include(p => p.Category) 
+                                    .FirstOrDefaultAsync(p => p.productId == id);
 
         if (product == null)
         {
@@ -68,24 +70,28 @@ public class HomeController : Controller
 
         return View(product);
     }
+
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddProduct()
     {
-        List<Category> categories = await db.categories.ToListAsync();
-        ViewBag.Categories = new SelectList(categories);
+        var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
+        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName");
         return View();
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddProduct(Product product)
     {
         if (ModelState.IsValid)
         {
-            db.products.Add(product);
+            db.Add(product);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
+        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName", product.Category.categoryId);
         return View(product);
     }
 
