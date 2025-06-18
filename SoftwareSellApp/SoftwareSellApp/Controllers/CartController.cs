@@ -18,7 +18,7 @@ namespace SoftwareSellApp.Controllers
 
         public IActionResult Index()
         {
-            var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>(CARTKEY) ?? new List<CartItem>();
+            var cart = HttpContext.Session.GetObjectFromJson<Cart>(CARTKEY) ?? new Cart();
             return View(cart);
         }
 
@@ -30,8 +30,8 @@ namespace SoftwareSellApp.Controllers
                 return NotFound("Sản phẩm không tồn tại");
             }
 
-            var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>(CARTKEY) ?? new List<CartItem>();
-            var cartItem = cart.FirstOrDefault(item => item.productId == id);
+            var cart = HttpContext.Session.GetObjectFromJson<Cart>(CARTKEY) ?? new Cart();
+            var cartItem = cart.listOfCartItem.FirstOrDefault(item => item.productId == id);
 
             if (cartItem != null)
             {
@@ -39,7 +39,7 @@ namespace SoftwareSellApp.Controllers
             }
             else
             {
-                cart.Add(new CartItem
+                cart.listOfCartItem.Add(new CartItem
                 {
                     productId = product.productId,
                     productName = product.productName,
@@ -56,12 +56,12 @@ namespace SoftwareSellApp.Controllers
 
         public IActionResult RemoveFromCart(int id)
         {
-            var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>(CARTKEY) ?? new List<CartItem>();
-            var cartItem = cart.FirstOrDefault(item => item.productId == id);
+            var cart = HttpContext.Session.GetObjectFromJson<Cart>(CARTKEY) ?? new Cart();
+            var cartItem = cart.listOfCartItem.FirstOrDefault(item => item.productId == id);
 
             if (cartItem != null)
             {
-                cart.Remove(cartItem);
+                cart.listOfCartItem.Remove(cartItem);
             }
 
             HttpContext.Session.SetObjectAsJson(CARTKEY, cart);
