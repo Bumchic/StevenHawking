@@ -187,7 +187,8 @@ public class HomeController : Controller
         }
 
         var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
-        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName", product.Category.categoryId);
+        ViewBag.CategoriesJson = JsonConvert.SerializeObject(categories);
+        ViewBag.categories = categories;
 
         return View(product);
     }
