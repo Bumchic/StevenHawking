@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.Elfie.Model.Strings;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
+using Newtonsoft.Json;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SoftwareSellApp.Controllers;
 
@@ -89,10 +93,33 @@ public class HomeController : Controller
         ViewBag.CategoryName = categoryName;
         return View(products);
     }
+    [HttpPost]
+    public string AddProductToCart(Product product)
+    {
+        if (!ModelState.IsValid)
+        {
+            return "Add product failed" + product.productName;
+        }
+        string? cartJson = HttpContext.Session.GetString("Cart");
+        Cart cart;
+        if (cartJson is null)
+        {
+            cart = new Cart();
+            cart.listOfProduct.Add(product);
+
+        }
+        else
+        {
+            cart = JsonConvert.DeserializeObject<Cart>(cartJson);
+            cart.listOfProduct.Add(product);
+        }
+        HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
+        return "ItemAdded";
+    }
     public async Task<IActionResult> ClaimAdmin()
     {
         User? user = await userManager.GetUserAsync(HttpContext.User);
-        if(user is null)
+        if (user is null)
         {
             return RedirectToAction("Index");
         }
@@ -120,4 +147,5 @@ public class HomeController : Controller
         }
         return RedirectToAction("Index");
     }
+    
 }

@@ -1,0 +1,36 @@
+﻿@model Cart
+@{
+    ViewData["Title"] = "CartView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>CartView</h1>
+@if(Model.listOfProduct.Count == 0)
+{
+    <h1>There is no product in your cart</h1>
+}else
+{
+    <table>
+        <tr>
+        <thead>Product Name</thead>
+        <thead>Price</thead>
+        <thead> Description</thead>
+        </tr>
+        @foreach (Product product in Model.listOfProduct)
+        {
+
+            <tr>
+                <td>
+                    @product.productName
+                </td>
+                <td>
+                    @product.price
+                </td>
+                <td>
+                    @product.introduce
+                </td>
+            </tr>
+        }
+    </table>
+
+}

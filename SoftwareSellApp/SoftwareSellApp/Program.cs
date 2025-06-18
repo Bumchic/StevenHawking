@@ -17,6 +17,7 @@ namespace SoftwareSellApp
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().
                 AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddSession();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -30,7 +31,7 @@ namespace SoftwareSellApp
             app.UseHttpsRedirection();
             app.UseRouting();
 
-
+            app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapRazorPages();
