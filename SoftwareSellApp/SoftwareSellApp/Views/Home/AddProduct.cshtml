@@ -28,8 +28,8 @@
             </div>
             <div class="col-md-6">
                 <label asp-for="Category.categoryId" class="form-label" >Danh mục</label>
-                @Html.DropDownList("categoryName", new SelectList(ViewBag.categories, "categoryId", "categoryName"), new {@class= "form-control", @id="DropDown", @selectedIndex = -1})
-                <input value="" id="CategoryName" hidden="true"></input>
+                @Html.DropDownList("categoryId", new SelectList(ViewBag.categories, "categoryId", "categoryName"), new {@class= "form-control", @id="DropDown", @selectedIndex = -1})
+                <input asp-for="Category" value="" id="CategoryName" hidden="true"></input>
                 <span asp-validation-for="Category.categoryId" class="text-danger"></span>
             </div>
         </div>
