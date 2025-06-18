@@ -1,18 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SoftwareSellApp.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SoftwareSellApp.Controllers
 {
     public class CartController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> userManager;
+        private readonly ApplicationDbContext db;
 
-        public CartController(ApplicationDbContext context)
+        public CartController(ApplicationDbContext context, Microsoft.AspNetCore.Identity.UserManager<User> userManager, ApplicationDbContext db)
         {
             _context = context;
+            this.userManager = userManager;
+            this.db = db;
         }
 
         public const string CARTKEY = "cart";
@@ -68,6 +75,24 @@ namespace SoftwareSellApp.Controllers
             HttpContext.Session.SetObjectAsJson(CARTKEY, cart);
 
             return RedirectToAction("Index");
+        }
+        [Authorize]
+        public async Task<IActionResult> ProcessPayment()
+        {
+            Cart cart = HttpContext.Session.GetObjectFromJson<Cart>(CARTKEY);
+            User user = await userManager.GetUserAsync(HttpContext.User);
+            foreach (CartItem item in cart.listOfCartItem)
+            {
+                Order order = new Order()
+                {
+                    DayBought = DateTime.Now,
+                    User = user,
+                    TotalAmount = item.Total
+                };
+                await db.Orders.AddAsync(order);
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }
