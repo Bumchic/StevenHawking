@@ -178,7 +178,7 @@ public class HomeController : Controller
         return RedirectToAction("Index");
     }
 
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id)
     {
         var product = await db.products.FindAsync(id);
