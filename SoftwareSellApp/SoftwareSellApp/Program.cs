@@ -44,9 +44,9 @@ namespace SoftwareSellApp
             app.UseRouting();
 
             app.UseSession();
-
-            app.UseAuthentication();
             app.UseAuthorization();
+            app.UseAuthentication();
+
 
             app.MapRazorPages();
             app.MapStaticAssets();

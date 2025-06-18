@@ -36,6 +36,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index(string search = "")
     {
+        Debug.WriteLine(User.IsInRole("Admin"));
         ViewBag.SearchTerm = search;
         IQueryable<Product> productsQuery = db.products.Include(p => p.Category);
 
@@ -68,7 +69,7 @@ public class HomeController : Controller
         return View(product);
     }
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> AddProductAsync()
+    public async Task<IActionResult> AddProduct()
     {
         List<Category> categories = await db.categories.ToListAsync();
         ViewBag.Categories = new SelectList(categories);
