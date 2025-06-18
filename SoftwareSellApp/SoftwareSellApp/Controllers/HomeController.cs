@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace SoftwareSellApp.Controllers;
 
@@ -75,7 +76,8 @@ public class HomeController : Controller
     public async Task<IActionResult> AddProduct()
     {
         var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
-        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName");
+        ViewBag.CategoriesJson = JsonConvert.SerializeObject(categories);
+        ViewBag.categories = categories;
         return View();
     }
 
@@ -91,7 +93,8 @@ public class HomeController : Controller
         }
 
         var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
-        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName", product.Category.categoryId);
+        ViewBag.CategoriesJson = JsonConvert.SerializeObject(categories);
+        ViewBag.categories = categories;
         return View(product);
     }
 

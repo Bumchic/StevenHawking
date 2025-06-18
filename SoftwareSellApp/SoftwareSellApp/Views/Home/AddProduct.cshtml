@@ -27,8 +27,9 @@
                 <span asp-validation-for="images" class="text-danger"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="Category.categoryId" class="form-label">Danh mục</label>
-                <select asp-for="Category.categoryId" class="form-control" asp-items="ViewBag.Categories"></select>
+                <label asp-for="Category.categoryId" class="form-label" >Danh mục</label>
+                @Html.DropDownList("categoryName", new SelectList(ViewBag.categories, "categoryId", "categoryName"), new {@class= "form-control", @id="DropDown", @selectedIndex = -1})
+                <input value="" id="CategoryName" hidden="true"></input>
                 <span asp-validation-for="Category.categoryId" class="text-danger"></span>
             </div>
         </div>
@@ -52,6 +53,15 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+                $(document).ready(function(){
+        var model = @Html.Raw(@ViewBag.CategoriesJson)
+         $("#CategoryName").val(model[0].categoryName);
+        $("#DropDown").change(function(){
+            var model = @Html.Raw(@ViewBag.CategoriesJson)
+            $("#CategoryName").val(model[$("#DropDown").prop('selectedIndex')].categoryName);
+        });});
+    </script>
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
