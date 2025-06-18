@@ -36,7 +36,6 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index(string search = "")
     {
-<<<<<<< HEAD
         ViewBag.SearchTerm = search;
         IQueryable<Product> productsQuery = db.products.Include(p => p.Category);
 
@@ -50,13 +49,11 @@ public class HomeController : Controller
         var filteredProducts = await productsQuery.ToListAsync();
 
         return View(filteredProducts);
-=======
         Debug.WriteLine(User.IsInRole("Admin"));
         search = search.ToLower();
         List<Product> products = await db.products.ToListAsync();
         List<Product> filter = products.Where(p => p.productName.ToLower().Contains(search)).ToList();
         return View(filter);
->>>>>>> main
     }
 
     public async Task<IActionResult> ProductView(int id)
@@ -168,5 +165,57 @@ public class HomeController : Controller
             await userManager.AddToRoleAsync(user, "Admin");
         }
         return RedirectToAction("Index");
+    }
+
+
+    public async Task<IActionResult> Edit(int id)
+    {
+        var product = await db.products.FindAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
+        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName", product.Category.categoryId);
+
+        return View(product);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, [Bind("productId,productName,images,price,introduce,CategoryId")] Product product)
+    {
+        if (id != product.productId)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+
+                db.Update(product);
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!db.products.Any(e => e.productId == product.productId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(ProductView), new { id = product.productId });
+        }
+
+        var categories = await db.categories.OrderBy(c => c.categoryName).ToListAsync();
+        ViewBag.Categories = new SelectList(categories, "categoryId", "categoryName", product.Category.categoryId);
+
+        return View(product);
     }
 }
