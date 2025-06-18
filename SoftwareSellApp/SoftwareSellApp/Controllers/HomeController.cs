@@ -229,10 +229,5 @@ public class HomeController : Controller
 
         return View(product);
     }
-    public async Task<IActionResult> ViewOrderHistory()
-    {
-        User user = await userManager.GetUserAsync(HttpContext.User);
-        List<Order> order = db.Orders.Where(o => o.User.Id == user.Id).ToList();
-        return View(order);
-    }
+
 }
