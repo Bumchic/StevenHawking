@@ -28,8 +28,8 @@
 
         <div class="row mb-3">
             <div class="col-md-6">
-                <label asp-for="images" class="control-label">Tên file hình ảnh</label>
-                <input asp-for="images" class="form-control" />
+                <label asp-for="images" class="control-label">Hình ảnh</label>
+                <input asp-for="images" class="form-control" type="file" accept="image/*" />
                 <span asp-validation-for="images" class="text-danger"></span>
             </div>
             <div class="col-md-6">
